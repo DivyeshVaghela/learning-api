@@ -27,11 +27,22 @@ server.use(
                 '/admin/auth',
 
                 '/user/register',
+                '/user/verify-email',
+                '/user/forgot-password',
+                '/user/reset-password',
                 '/user/login',
-                '/user/auth'
+                '/user/auth',
+                /\/assets\/public\/?.*/
             ]
         })
 );
+
+server.get('/assets/public/*', restify.plugins.serveStatic({
+    directory: __dirname
+}));
+server.get('/assets/material/*', restify.plugins.serveStatic({
+    directory: __dirname
+}));
 
 server.listen(config.PORT, () => {
 
@@ -41,6 +52,12 @@ server.listen(config.PORT, () => {
 
     //notice module (notification)
     require('./routes/notice')(server);
+
+    //types
+    require('./routes/types')(server);
+    //material module
+    require('./routes/subject')(server);
+    require('./routes/material')(server);
 
     console.log(`Server listening on ${config.PORT}`);
 });

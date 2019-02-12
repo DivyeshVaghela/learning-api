@@ -12,7 +12,10 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^8.4.0",
+    "mime-types": "^2.1.21",
+    "mv": "^2.1.1",
     "mysql2": "^1.6.4",
+    "nodemailer": "^5.1.1",
     "restify": "^7.5.0",
     "restify-cors-middleware": "^1.1.1",
     "restify-errors": "^6.1.1",

@@ -8,6 +8,7 @@
 * MySQL database
 
 ## *TODO*
-- Created database in MySQL from /assets/database/database v\*.sql
-- Set database related parameters in /config/database.json
+- Created database in MySQL from ```/assets/database/database v\*.sql```
+- Set database related parameters in ```/config/database.json```
+- Fill all the TODO properly in ```/config/config.js```
 - \> npm install

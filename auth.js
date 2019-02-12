@@ -39,6 +39,9 @@ module.exports.forbiddenMessage = forbiddenMessage = 'You don\'t have enough pri
 
 // };
 
+module.exports.allowedRolesAdmin = allowedRolesAdmin = ['Admin'];
+module.exports.allowedRolesAll = allowedRolesAll = ['Admin','Learner'];
+
 module.exports.authorize = (req, roles) => {
 
     var isAuthorized = false;
@@ -55,13 +58,13 @@ module.exports.authorize = (req, roles) => {
     return isAuthorized;
 };
 
-module.exports.authenticate = (email, password, role) => {
+module.exports.authenticate = (email, password, roles) => {
 
     return new Promise((resolve, reject) => {
 
         User.findOne({
             attributes: [
-                'id', 'email', 'username', 'mobileNo', 'password'
+                'id', 'email', 'username', 'mobileNo', 'password', 'emailVerified', 'mobileNoVerified'
             ],
             where: {email},
             include: [{
@@ -84,7 +87,7 @@ module.exports.authenticate = (email, password, role) => {
                         if (isMatch){
                             var authorized = false;
                             user.Roles.every(element => {
-                                if (element.name === role){
+                                if (roles.indexOf(element.name) != -1){
                                     authorized = true;
                                     return false;
                                 }

@@ -28,22 +28,22 @@ module.exports = (server) => {
         if (req.query != null){
             
             if (!req.query.hasOwnProperty('details') || (req.query.hasOwnProperty('details') && req.query.details != "false")){
-                if (req.query.hasOwnProperty('detailsLimit')){
-                    attributes.push([db.sequelize.fn('LEFT', db.sequelize.col('details'), req.query.detailsLimit), 'details']);
+                if (req.query.hasOwnProperty('detailsLimit') && !isNaN(req.query.detailsLimit)){
+                    attributes.push([db.sequelize.fn('LEFT', db.sequelize.col('details'), parseInt(req.query.detailsLimit)), 'details']);
                 }else{
                     attributes.push('details');
                 }
             }
 
-            if (req.query.hasOwnProperty('page')){
+            if (req.query.hasOwnProperty('page') && !isNaN(req.query.page)){
                 var intPage = parseInt(req.query.page);
-                if (!isNaN(intPage) && intPage > 0){
+                if (intPage > 0){
                     page = intPage;
                 }
             }
-            if (req.query.hasOwnProperty('pageSize')){
+            if (req.query.hasOwnProperty('pageSize') && !isNaN(req.query.pageSize)){
                 var intPageSize = parseInt(req.query.pageSize);
-                if (!isNaN(intPageSize) && intPageSize > 0){
+                if (intPageSize > 0){
                     pageSize = intPageSize;
                 }
             }

@@ -32,6 +32,10 @@ module.exports = function(sequelize, DataTypes) {
         mobileNoVerified:{
             field: 'mobile_no_verified',
             type: DataTypes.BOOLEAN
+        },
+        verificationCode: {
+            field: 'verification_code',
+            type: DataTypes.STRING
         }
     },{
         tableName: 'users',

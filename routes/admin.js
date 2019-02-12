@@ -8,13 +8,13 @@ const db = require('../models');
 const User = db.User;
 const Role = db.Role;
 
-const allowedRoles = ['Admin'];
+const allowedRolesAdmin = ['Admin'];
 
 module.exports = (server) => {
 
     server.get('/admin/protected', (req, res, next) => {
 
-        if (!auth.authorize(req, allowedRoles)){
+        if (!auth.authorize(req, allowedRolesAdmin)){
             next(new restifyErrors.ForbiddenError(auth.forbiddenMessage));
             return;
         }
@@ -33,7 +33,7 @@ module.exports = (server) => {
 
             const {email, password} = req.body;
 
-            auth.authenticate(email, password, 'Admin')
+            auth.authenticate(email, password, allowedRolesAdmin)
                 .then(user => {
 
                     //generate token
