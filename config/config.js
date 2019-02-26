@@ -14,17 +14,26 @@ module.exports =  {
     TOKEN_EXPIRES_IN: process.env.TOKEN_EXPIRES_IN || '60m',        //TODO: For how much time the Token will be valid
 
     EMAIL: {
-        host: 'smtp.gmail.com',                         //TODO: host for email exchange
-        port: 587,                                      //TODO: port for email
-        secure: false,                                  //TODO: secure or not
-        emailAddress: 'example@mail.com',               //TODO: change the email address to send the mail to users
+        host: 'smtp.gmail.com',                                     //TODO: host for email exchange
+        port: 587,                                                  //TODO: port for email
+        secure: false,                                              //TODO: secure or not
+        emailAddress: '***',               //TODO: change the email address to send the mail to users
         username: APP_NAME,
-        password: '************'                        //TODO: place the email address password here
+        password: '****'                                //TODO: place the email address password here
     },
 
     WEB_APP: {
         host: WEB_APP_HOST,
         port: WEB_APP_PORT,
         base_url: `http://${WEB_APP_HOST}:${WEB_APP_PORT}`
+    },
+
+    //TODO: change the payment related parameters
+    PAYMENT: {
+        PayUMoney: {
+            MERCHANT_ID: '******',
+            KEY: '********',                                        //TEST
+            SALT: '**********'                                      //TEST
+        }
     }
 };

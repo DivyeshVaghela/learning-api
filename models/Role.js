@@ -32,33 +32,3 @@ module.exports = function(sequelize, DataTypes) {
 
     return Role;
 };
-
-// var Role = db.sequelize.define('roles', {
-
-//     id:{
-//         type: Sequelize.INTEGER,
-//         autoIncrement: true,
-//         primaryKey: true
-//     },
-//     name: {
-//         type: Sequelize.STRING
-//     },
-//     details: {
-//         type: Sequelize.TEXT
-//     }
-// },{
-//     underscored: true,
-//     classMethods: {
-//         associate: function(models){
-//             Role.belongsToMany(
-//                 models.User,
-//                 {
-//                     through: 'users_roles',
-//                     foreignKey: 'FK_userrole_role'
-//                 }
-//             );
-//         }
-//     }
-// });
-
-// module.exports = Role;

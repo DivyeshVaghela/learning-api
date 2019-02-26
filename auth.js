@@ -4,6 +4,9 @@ const restifyErrors = require('restify-errors');
 const db = require('./models');
 const User = db.User;
 const Role = db.Role;
+const UserPackge = db.UserPackge;
+const Package = db.Package;
+const Op = db.sequelize.Op;
 
 module.exports.authFailedMessage = authFailedMessage  = 'Authentication Failed';
 module.exports.forbiddenMessage = forbiddenMessage = 'You don\'t have enough priviledges'; //Not authorized for a role
@@ -58,13 +61,13 @@ module.exports.authorize = (req, roles) => {
     return isAuthorized;
 };
 
-module.exports.authenticate = (email, password, roles) => {
+module.exports.authenticate = (email, password, roles, withinApp) => {
 
     return new Promise((resolve, reject) => {
 
         User.findOne({
             attributes: [
-                'id', 'email', 'username', 'mobileNo', 'password', 'emailVerified', 'mobileNoVerified'
+                'id', 'email', 'username', 'mobileNo', 'password', 'emailVerified', 'mobileNoVerified', 'created_at', 'updated_at'
             ],
             where: {email},
             include: [{
@@ -74,6 +77,23 @@ module.exports.authenticate = (email, password, roles) => {
                 through: {
                     attributes: []
                 }
+            }, {
+                model: Package,
+                rquired: false,
+                attributes: ['id', 'title', 'subtitle', 'details', 'duration', 'durationScale', 'rate', 'isActive', 'created_at', 'updated_at'],
+
+                through: {
+                    attributes: ['id','validityStart','validityEnd','isActive'],
+                    where: {
+                        isActive: true,
+                        validityStart:{
+                            [Op.lt]: db.Sequelize.fn('current_timestamp')
+                        },
+                        validityEnd:{
+                            [Op.gt]: db.Sequelize.fn('current_timestamp')
+                        }
+                    }
+                }
             }]
         }).then(user => {
 
@@ -81,35 +101,74 @@ module.exports.authenticate = (email, password, roles) => {
                 reject(authFailedMessage);
             } else {
 
-                bcrypt.compare(password, user.password)
-                    .then(isMatch => {
+                const proceed = (isMatched) => {
 
-                        if (isMatch){
-                            var authorized = false;
-                            user.Roles.every(element => {
-                                if (roles.indexOf(element.name) != -1){
-                                    authorized = true;
-                                    return false;
-                                }
-                                return true;
-                            });
+                    if (isMatched === true){
+                        var authorized = false;
+                        user.Roles.every(element => {
+                            if (roles.indexOf(element.name) != -1){
+                                authorized = true;
+                                return false;
+                            }
+                            return true;
+                        });
 
-                            if(authorized)
-                                resolve(user);
-                            else
-                                reject(forbiddenMessage);
-                        } else {
-                            reject(authFailedMessage);
+                        if(authorized){
+                            console.log(`authorized`);
+                            // UserPackage.findOne({
+                            //     attributes: ['id','validityStart','validityEnd','isActive'],
+                            //     include: [
+                            //         {
+                            //             model: Package,
+                            //             require: true,
+                            //             attributes: ['id', 'title', 'subtitle', 'details', 'duration', 'durationScale', 'rate', 'isActive', 'created_at', 'updated_at'],
+                            //             as: 'package'
+                            //         }
+                            //     ],
+                            //     where: {
+                            //         userId: user.id,
+                            //         isActive: true,
+                            //         validityStart:{
+                            //             [Op.lt]: db.Sequelize.fn('current_timestamp')
+                            //         },
+                            //         validityEnd:{
+                            //             [Op.gt]: db.Sequelize.fn('current_timestamp')
+                            //         }
+                            //     }
+                            // }).then(userPackage => {
+                            //     console.log(userPackage);
+                            //     user.package = userPackage;
+                            //     resolve(user);
+                            // }).catch(err => {
+                            //     console.log(err);
+                            //     reject(err);
+                            // });
+                            resolve(user);
                         }
-                    })
-                    .catch(err => {
-                        reject(authFailedMessage)
-                    });
+                        else
+                            reject(forbiddenMessage);
+                    } else {
+                        reject(authFailedMessage);
+                    }
+                };
+
+                if (withinApp === true){
+                    proceed(true);
+                } else {
+                    bcrypt.compare(password, user.password)
+                        .then(isMatch => {
+                            proceed(isMatch);
+                        })
+                        .catch(err => {
+                            reject(authFailedMessage)
+                        });
                 }
-            })
-            .catch(err => {
-                reject(authFailedMessage)
-            });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            reject(authFailedMessage)
+        });
     });
 
 };

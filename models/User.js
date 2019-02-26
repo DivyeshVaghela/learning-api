@@ -49,6 +49,13 @@ module.exports = function(sequelize, DataTypes) {
                 through: models.UserRole
             }
         );
+
+        User.belongsToMany(
+            models.Package,
+            {
+                through: models.UserPackage
+            }
+        );
     };
 
     return User;

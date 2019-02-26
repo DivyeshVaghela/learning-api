@@ -32,6 +32,10 @@ server.use(
                 '/user/reset-password',
                 '/user/login',
                 '/user/auth',
+
+                '/user/package-purchase/success',
+                '/user/package-purchase/failure',
+
                 /\/assets\/public\/?.*/
             ]
         })
@@ -58,6 +62,9 @@ server.listen(config.PORT, () => {
     //material module
     require('./routes/subject')(server);
     require('./routes/material')(server);
+
+    //package
+    require('./routes/package')(server);
 
     console.log(`Server listening on ${config.PORT}`);
 });

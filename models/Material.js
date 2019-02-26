@@ -42,6 +42,10 @@ module.exports = (sequelize, DataTypes) => {
         path: {
             type: DataTypes.STRING
         },
+        isPremium: {
+            type: DataTypes.BOOLEAN,
+            field: 'is_premium'
+        },
         createdByUserId: {
             type: DataTypes.INTEGER,
             field: 'created_by',

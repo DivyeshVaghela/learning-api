@@ -31,7 +31,7 @@ module.exports = (server) => {
             include: [],
             where: {}
         };
-        var attributes = ['id','subjectId','title','subtitle','typeId','path', 'created_at', 'updated_at'];
+        var attributes = ['id','subjectId','title','subtitle','typeId','path', 'isPremium', 'created_at', 'updated_at'];
 
         var pageSize = 20;
         var page = 1;
@@ -111,13 +111,14 @@ module.exports = (server) => {
                 || !req.body.hasOwnProperty('subtitle')
                 || !req.body.hasOwnProperty('subjectId')
                 || !req.body.hasOwnProperty('typeId')
+                || !req.body.hasOwnProperty('isPremium')
                 || !req.files.hasOwnProperty('materialFile')){
 
             next(new restifyErrors.InvalidArgumentError('Request does not have all the required arguments (title, subtitle, material)'));
             return;
         }
 
-        const { title, subtitle, details, subjectId, typeId } = req.body;
+        const { title, subtitle, details, subjectId, typeId, isPremium } = req.body;
         var subject = null;
         var type = null;
 
@@ -269,7 +270,7 @@ module.exports = (server) => {
         var query = {
             include: []
         };
-        var attributes = ['id','subjectId','title','subtitle','typeId','path', 'created_at', 'updated_at'];
+        var attributes = ['id','subjectId','title','subtitle','typeId','path', 'isPremium', 'created_at', 'updated_at'];
 
         if (req.query != null){
 
@@ -342,7 +343,7 @@ module.exports = (server) => {
         var query = {
             include: []
         };
-        var attributes = ['id', 'title', 'subtitle', 'subjectId', 'typeId', 'path', 'created_at', 'updated_at'];
+        var attributes = ['id', 'title', 'subtitle', 'subjectId', 'typeId', 'path', 'isPremium', 'created_at', 'updated_at'];
         var subjectAttributes = [];
 
         var pageSize = 20;
@@ -422,7 +423,7 @@ module.exports = (server) => {
             .catch(err => {
                 next(new restifyErrors.InternalServerError(err));
             });
-    })
+    });
 
     server.put('/material/:id(^\\d+$)', (req, res, next) => {
 
@@ -431,17 +432,18 @@ module.exports = (server) => {
             return;
         }
 
-        const { title, subtitle, details, subjectId, typeId } = req.body;
-        var query = { title, subtitle, details, subjectId, typeId };
-
         if (req.body == undefined
             || !req.body.hasOwnProperty('title')
             || !req.body.hasOwnProperty('subtitle')
+            || !req.body.hasOwnProperty('isPremium')
             || !req.body.hasOwnProperty('subjectId')){
 
             next(new restifyErrors.InvalidArgumentError('Request does not have all the required arguments (title, subtitle)'));
             return;
         }
+        
+        const { title, subtitle, details, subjectId, typeId, isPremium } = req.body;
+        var query = { title, subtitle, details, subjectId, typeId, isPremium };
 
         const hasMaterial = req.files != null && req.files.hasOwnProperty('materialFile');              //check if materialFile exists
 
